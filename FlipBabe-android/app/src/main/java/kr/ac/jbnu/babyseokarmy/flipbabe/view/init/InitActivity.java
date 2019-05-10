@@ -1,11 +1,11 @@
 package kr.ac.jbnu.babyseokarmy.flipbabe.view.init;
 
-import androidx.appcompat.app.AppCompatActivity;
-import kr.ac.jbnu.babyseokarmy.flipbabe.R;
-
 import android.os.Bundle;
 
-public class InitActivity extends AppCompatActivity {
+import kr.ac.jbnu.babyseokarmy.flipbabe.R;
+import kr.ac.jbnu.babyseokarmy.flipbabe.view.base.BluServiceActivity;
+
+public class InitActivity extends BluServiceActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
