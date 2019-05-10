@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "978938819682",
+    "firebase_url": "https://flipbabe-android.firebaseio.com",
+    "project_id": "flipbabe-android",
+    "storage_bucket": "flipbabe-android.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:978938819682:android:c469377da9953964",
+        "android_client_info": {
+          "package_name": "kr.ac.jbnu.babyseokarmy.flipbabe"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "978938819682-bodf9r1ukiikim7q2eoaofg4ihujnntp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "kr.ac.jbnu.babyseokarmy.flipbabe",
+            "certificate_hash": "b85969da84e7c8811f7fd026b323f1175c9175e3"
+          }
+        },
+        {
+          "client_id": "978938819682-bbavplaog496pjdb8sgmpqbott6qpjl6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDD5VvJ1zTYYS6YfXyz4LfnnxwKXk02SP4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "978938819682-bbavplaog496pjdb8sgmpqbott6qpjl6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
