@@ -1,6 +1,5 @@
 package kr.ac.jbnu.babyseokarmy.flipbabe.view.base;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,9 +14,9 @@ import kr.ac.jbnu.babyseokarmy.flipbabe.R;
 
 public abstract class BaseFragment extends Fragment {
 
-    protected Bundle args;
+//    protected Bundle args;
     protected Context context;
-    private Activity activity;
+//    private Activity activity;
     private String TAG = BaseFragment.class.getSimpleName();
     private View v;
     private int layoutId;
@@ -47,7 +46,7 @@ public abstract class BaseFragment extends Fragment {
 
         onCreateView(inflater, v);
 
-        if(v.getBackground() == null || v.getBackground().getCurrent() == null)
+        if(v.getBackground() == null)
             v.setBackgroundColor(context.getResources().getColor(R.color.white));
         return v;
     }
@@ -61,7 +60,7 @@ public abstract class BaseFragment extends Fragment {
     public abstract void onCreateView(LayoutInflater inflate, View v);
 
 
-    public void onFocusFragment() {
+    private void onFocusFragment() {
 
     }
 
