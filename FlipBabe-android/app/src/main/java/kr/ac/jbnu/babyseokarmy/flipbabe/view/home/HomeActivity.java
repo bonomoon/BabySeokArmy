@@ -1,10 +1,11 @@
-package kr.ac.jbnu.babyseokarmy.flipbabe;
+package kr.ac.jbnu.babyseokarmy.flipbabe.view.home;
 
 import androidx.appcompat.app.AppCompatActivity;
+import kr.ac.jbnu.babyseokarmy.flipbabe.R;
 
 import android.os.Bundle;
 
-public class MainActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
