@@ -25,7 +25,7 @@ public class InitActivity extends AppCompatActivity {
 
     private void updateUI(FirebaseUser currentUser) {
         if (currentUser == null) {
-            fragmentUtil.add(new SignInFragment(), null);
+            fragmentUtil.add(SignInFragment.newInstance(), null);
         } else {
             startActivity(new Intent(this, HomeActivity.class));
             finish();
