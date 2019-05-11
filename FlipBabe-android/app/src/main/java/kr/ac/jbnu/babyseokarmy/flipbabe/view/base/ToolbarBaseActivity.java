@@ -22,7 +22,6 @@ import kr.ac.jbnu.babyseokarmy.flipbabe.R;
 
 public class ToolbarBaseActivity extends AppCompatActivity {
 
-
     protected static String TAG = ToolbarBaseActivity.class.getSimpleName();
 
     protected Context context;
