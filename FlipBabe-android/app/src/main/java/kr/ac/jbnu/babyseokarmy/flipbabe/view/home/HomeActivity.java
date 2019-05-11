@@ -29,7 +29,6 @@ public class HomeActivity extends BluServiceActivity {
                 careBtn.setTextColor(getResources().getColor(R.color.orangeKcal));
                 diaryBtn.setTextColor(getResources().getColor(R.color.black));
                 fragmentUtil.addFadeInOut(HomeCareFragment.newInstance(), null);
-                fragmentUtil.clear();
             }
         });
 
@@ -38,7 +37,6 @@ public class HomeActivity extends BluServiceActivity {
                 careBtn.setTextColor(getResources().getColor(R.color.black));
                 diaryBtn.setTextColor(getResources().getColor(R.color.orangeKcal));
                 fragmentUtil.addFadeInOut(HomeDiaryFragment.newInstance(), null);
-                fragmentUtil.clear();
             }
         });
     }

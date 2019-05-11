@@ -21,12 +21,12 @@
             android:layout_marginBottom="15dp"/>
 
         <Button
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
+            android:layout_gravity="bottom|center"
             android:layout_marginBottom="30dp"
-            android:layout_marginRight="100dp"
-            android:layout_marginLeft="100dp"
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp"
             android:visibility="invisible"
             android:text="상황 해결"
             android:textSize="18sp"
@@ -45,25 +45,56 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginTop="5dp"
+                android:text="배터리"
+                android:textSize="13sp"
+                android:textColor="@color/black"/>
         </LinearLayout>
+
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/common_google_signin_btn_text_dark_disabled" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical">
-
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginTop="5dp"
+                android:text="대소변"
+                android:textSize="13sp"
+                android:textColor="@color/black"/>
 
         </LinearLayout>
 
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/common_google_signin_btn_text_dark_disabled" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical">
 
-
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginTop="5dp"
+                android:text="뒤집기"
+                android:textSize="13sp"
+                android:textColor="@color/black"/>
         </LinearLayout>
 
     </LinearLayout>
@@ -71,10 +102,49 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingBottom="10dp"
         android:layout_weight="0.35"
+        android:gravity="bottom"
         android:orientation="vertical">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:text="서비스 시작을 위해 돌봄시작을 눌러주세요!"
+            android:textSize="15sp" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="아기가 뒤집기를 했어요!"
+            android:textSize="15sp"
+            android:textColor="@color/red"
+            android:visibility="gone"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="대소변이 감지되었어요!"
+            android:textSize="15sp"
+            android:textColor="@color/red"
+            android:visibility="gone"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="50dp"
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp"
+            android:text="돌봄 시작"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:background="@drawable/btn_gradient_circle_green"/>
     </LinearLayout>
 
 </LinearLayout>

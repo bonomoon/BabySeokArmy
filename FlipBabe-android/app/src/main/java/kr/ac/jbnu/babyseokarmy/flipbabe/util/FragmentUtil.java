@@ -85,10 +85,6 @@ public class FragmentUtil {
         }
     }
 
-    public Fragment getCurrentFragment() {
-        return mFragmentManager.getFragments().get(mFragmentManager.getFragments().size()-1);
-    }
-
     public void back() {
         if (mFragmentManager == null) {
             Log.e(TAG, "FragmentManager fm is null.");
