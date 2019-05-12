@@ -19,19 +19,40 @@
             android:layout_marginRight="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="15dp"
-            android:layout_marginBottom="15dp"/>
+            android:layout_marginBottom="15dp"
+            android:src="@drawable/babynfq"/>
 
-        <Button
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:layout_marginBottom="30dp"
-            android:paddingLeft="50dp"
-            android:paddingRight="50dp"
-            android:visibility="invisible"
-            android:text="기저귀 교체"
-            android:textSize="18sp"
-            android:background="@drawable/btn_gradient_circle_white"/>
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/timer_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="00:00:00"
+                android:textColor="@color/red"
+                android:textSize="15sp"
+                android:visibility="invisible"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/situ_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="30dp"
+                android:paddingLeft="50dp"
+                android:paddingRight="50dp"
+                android:visibility="invisible"
+                android:text="기저귀 교체"
+                android:textSize="18sp"
+                android:background="@drawable/btn_gradient_circle_white"/>
+
+        </LinearLayout>
+
     </FrameLayout>
 
     <LinearLayout

@@ -8,11 +8,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.service.autofill.TextValueSanitizer;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,7 +51,11 @@ public class HomeCareFragment extends BaseFragment {
     // Name of the connected device
     private String mConnectedDeviceName = null;
 
-    TextView mPeePooTv, mFlipTv, mInfoTv;
+    ImageView babyIv;
+    Button situBtn;
+    TextView mPeePooTv, mFlipTv, mInfoTv, mTimeTextView;
+
+    private Thread timeThread = null;
 
     public HomeCareFragment() {
         super(R.layout.fragment_home_care);
@@ -83,6 +87,8 @@ public class HomeCareFragment extends BaseFragment {
         mFlipTv = v.findViewById(R.id.flip_tv);
         mPeePooTv = v.findViewById(R.id.pee_poo_tv);
         mInfoTv = v.findViewById(R.id.info_tv);
+        mTimeTextView = v.findViewById(R.id.timer_tv);
+        babyIv = v.findViewById(R.id.baby_type_img);
 
         Button careConnBtn = v.findViewById(R.id.care_conn_btn);
         careConnBtn.setOnClickListener(view -> {
@@ -95,6 +101,12 @@ public class HomeCareFragment extends BaseFragment {
                 if (mBlueService == null) setup();
                 else startActivityForResult(new Intent(this.getContext(), DeviceListActivity.class), REQUEST_CONNECT_DEVICE);
             }
+        });
+        situBtn = v.findViewById(R.id.situ_btn);
+        situBtn.setOnClickListener(view -> {
+            situBtn.setVisibility(View.INVISIBLE);
+            mTimeTextView.setVisibility(View.INVISIBLE);
+            timeThread.interrupt();
         });
     }
 
@@ -109,9 +121,17 @@ public class HomeCareFragment extends BaseFragment {
     private void updateWarning(String w) {
         mInfoTv.setText("돌봄 중입니다.");
         if(w.equals("F")) {
+            babyIv.setImageResource(R.drawable.babybw);
             mFlipTv.setVisibility(View.VISIBLE);
+            mTimeTextView.setVisibility(View.VISIBLE);
+            timeThread = new Thread(new timeThread());
+            timeThread.start();
         } else {
+            babyIv.setImageResource(R.drawable.babynfzz);
             mFlipTv.setVisibility(View.GONE);
+            situBtn.setVisibility(View.INVISIBLE);
+            mTimeTextView.setVisibility(View.INVISIBLE);
+            timeThread.interrupt();
         }
         //mPeePooTv.setVisibility(View.VISIBLE);
     }
@@ -185,6 +205,43 @@ public class HomeCareFragment extends BaseFragment {
                     Toast.makeText(this.getContext(), R.string.bt_not_enabled_leaving, Toast.LENGTH_SHORT).show();
                     Objects.requireNonNull(getActivity()).finish();
                 }
+        }
+    }
+
+    @SuppressLint("HandlerLeak")
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            int mSec = msg.arg1 % 100;
+            int sec = (msg.arg1 / 100) % 60;
+            int min = (msg.arg1 / 100) / 60;
+
+            @SuppressLint("DefaultLocale") String result = String.format("%02d:%02d:%02d", min, sec, mSec);
+            mTimeTextView.setText(result);
+        }
+    };
+
+    public class timeThread implements Runnable {
+        @Override
+        public void run() {
+            int i = 0;
+
+            while (true) {
+                Message msg = new Message();
+                msg.arg1 = i++;
+                handler.sendMessage(msg);
+
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    Objects.requireNonNull(getActivity()).runOnUiThread((Runnable) () -> {
+                        mTimeTextView.setText("");
+                        mTimeTextView.setText("00:00:00");
+                    });
+                    return; // 인터럽트 받을 경우 return
+                }
+            }
         }
     }
 }
