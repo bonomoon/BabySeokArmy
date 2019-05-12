@@ -34,6 +34,7 @@
         </activity>
         <activity android:name=".view.init.InitActivity" />
         <activity android:name=".view.home.HomeActivity" />
+
     </application>
 
 </manifest>
