@@ -8,19 +8,20 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.service.autofill.TextValueSanitizer;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Objects;
 
 import kr.ac.jbnu.babyseokarmy.flipbabe.R;
-import kr.ac.jbnu.babyseokarmy.flipbabe.service.BluetoothChatService;
 import kr.ac.jbnu.babyseokarmy.flipbabe.service.BluetoothService;
-import kr.ac.jbnu.babyseokarmy.flipbabe.view.DeviceListActivity;
 import kr.ac.jbnu.babyseokarmy.flipbabe.view.base.BaseFragment;
+import kr.ac.jbnu.babyseokarmy.flipbabe.view.blu.DeviceListActivity;
 
 public class HomeCareFragment extends BaseFragment {
     // Debugging
@@ -28,14 +29,15 @@ public class HomeCareFragment extends BaseFragment {
     private static final boolean D = true;
 
     // Message types sent from the BluetoothChatService Handler
-    private static final int MESSAGE_STATE_CHANGE = 1;
-    private static final int MESSAGE_READ = 2;
-    private static final int MESSAGE_DEVICE_NAME = 3;
-    private static final int MESSAGE_TOAST = 4;
+    public static final int MESSAGE_STATE_CHANGE = 1;
+    public static final int MESSAGE_READ = 2;
+    public static final int MESSAGE_WRITE = 3;
+    public static final int MESSAGE_DEVICE_NAME = 3;
+    public static final int MESSAGE_TOAST = 4;
 
     // Key names received from the BluetoothChatService Handler
-    private static final String DEVICE_NAME = "device_name";
-    private static final String TOAST = "toast";
+    public static final String DEVICE_NAME = "device_name";
+    public static final String TOAST = "toast";
 
     // Intent request codes
     private static final int REQUEST_CONNECT_DEVICE = 1;
@@ -48,6 +50,8 @@ public class HomeCareFragment extends BaseFragment {
 
     // Name of the connected device
     private String mConnectedDeviceName = null;
+
+    TextView mPeePooTv, mFlipTv, mInfoTv;
 
     public HomeCareFragment() {
         super(R.layout.fragment_home_care);
@@ -76,6 +80,10 @@ public class HomeCareFragment extends BaseFragment {
 
     @Override
     public void onCreateView(LayoutInflater inflate, View v) {
+        mFlipTv = v.findViewById(R.id.flip_tv);
+        mPeePooTv = v.findViewById(R.id.pee_poo_tv);
+        mInfoTv = v.findViewById(R.id.info_tv);
+
         Button careConnBtn = v.findViewById(R.id.care_conn_btn);
         careConnBtn.setOnClickListener(view -> {
             // 블루투스 연결안됐을때 연결하게 한다.
@@ -85,6 +93,7 @@ public class HomeCareFragment extends BaseFragment {
                 // Otherwise, setup the chat session
             } else {
                 if (mBlueService == null) setup();
+                else startActivityForResult(new Intent(this.getContext(), DeviceListActivity.class), REQUEST_CONNECT_DEVICE);
             }
         });
     }
@@ -93,8 +102,19 @@ public class HomeCareFragment extends BaseFragment {
         Log.d(TAG, "setup()");
         // Initialize the BluetoothChatService to perform bluetooth connections
         mBlueService = new BluetoothService(this.getContext(), mHandler);
+
+        startActivityForResult(new Intent(this.getContext(), DeviceListActivity.class), REQUEST_CONNECT_DEVICE);
     }
 
+    private void updateWarning(String w) {
+        mInfoTv.setText("돌봄 중입니다.");
+        if(w.equals("F")) {
+            mFlipTv.setVisibility(View.VISIBLE);
+        } else {
+            mFlipTv.setVisibility(View.GONE);
+        }
+        //mPeePooTv.setVisibility(View.VISIBLE);
+    }
 //           if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED) {
 //        Toast.makeText(this.getContext(), R.string.not_connected, Toast.LENGTH_SHORT).show();
 //        return;
@@ -110,14 +130,14 @@ public class HomeCareFragment extends BaseFragment {
                     if(D) Log.i(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
 
                     switch (msg.arg1) {
-                        case BluetoothChatService.STATE_CONNECTED:
+                        case BluetoothService.STATE_CONNECTED:
                             Toast.makeText(getContext(), R.string.title_connected_to, Toast.LENGTH_SHORT).show();
                             break;
-                        case BluetoothChatService.STATE_CONNECTING:
+                        case BluetoothService.STATE_CONNECTING:
                             Toast.makeText(getContext(), R.string.title_connecting, Toast.LENGTH_SHORT).show();
                             break;
-                        case BluetoothChatService.STATE_LISTEN:
-                        case BluetoothChatService.STATE_NONE:
+                        case BluetoothService.STATE_LISTEN:
+                        case BluetoothService.STATE_NONE:
                             Toast.makeText(getContext(), R.string.title_not_connected, Toast.LENGTH_SHORT).show();
                             break;
                     }
@@ -126,12 +146,7 @@ public class HomeCareFragment extends BaseFragment {
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
-                    if(readMessage == "F") {
-
-                    }
-                    if(readMessage == "R") {
-
-                    }
+                    updateWarning(readMessage);
                     break;
                 case MESSAGE_DEVICE_NAME:
                     // save the connected device's name
@@ -150,7 +165,7 @@ public class HomeCareFragment extends BaseFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(D) Log.d(TAG, "onActivityResult " + resultCode);
         switch (requestCode) {
-            case REQUEST_CONNECT_DEVICE:
+            case REQUEST_CONNECT_DEVICE:               //블루투스 디바이스와 커넥션함
                 // When DeviceListActivity returns with a device to connect
                 if (resultCode == Activity.RESULT_OK) {
                     // Get the device MAC address

@@ -16,6 +16,8 @@ import java.io.OutputStream;
 import java.util.UUID;
 
 import kr.ac.jbnu.babyseokarmy.flipbabe.view.BluetoothChatActivity;
+import kr.ac.jbnu.babyseokarmy.flipbabe.view.base.BluServiceActivity;
+import kr.ac.jbnu.babyseokarmy.flipbabe.view.home.HomeCareFragment;
 
 public class BluetoothService {
     // Debugging
@@ -62,7 +64,7 @@ public class BluetoothService {
         mState = state;
 
         // Give the new state to the Handler so the UI Activity can update
-        mHandler.obtainMessage(BluetoothChatActivity.MESSAGE_STATE_CHANGE, state, -1).sendToTarget();
+        mHandler.obtainMessage(HomeCareFragment.MESSAGE_STATE_CHANGE, state, -1).sendToTarget();
     }
 
     /**
@@ -134,9 +136,9 @@ public class BluetoothService {
         mConnectedThread.start();
 
         // Send the name of the connected device back to the UI Activity
-        Message msg = mHandler.obtainMessage(BluetoothChatActivity.MESSAGE_DEVICE_NAME);
+        Message msg = mHandler.obtainMessage(HomeCareFragment.MESSAGE_DEVICE_NAME);
         Bundle bundle = new Bundle();
-        bundle.putString(BluetoothChatActivity.DEVICE_NAME, device.getName());
+        bundle.putString(HomeCareFragment.DEVICE_NAME, device.getName());
         msg.setData(bundle);
         mHandler.sendMessage(msg);
 
@@ -178,9 +180,9 @@ public class BluetoothService {
         setState(STATE_LISTEN);
 
         // Send a failure message back to the Activity
-        Message msg = mHandler.obtainMessage(BluetoothChatActivity.MESSAGE_TOAST);
+        Message msg = mHandler.obtainMessage(HomeCareFragment.MESSAGE_TOAST);
         Bundle bundle = new Bundle();
-        bundle.putString(BluetoothChatActivity.TOAST, "Unable to connect device");
+        bundle.putString(HomeCareFragment.TOAST, "Unable to connect device");
         msg.setData(bundle);
         mHandler.sendMessage(msg);
     }
@@ -192,9 +194,9 @@ public class BluetoothService {
         setState(STATE_LISTEN);
 
         // Send a failure message back to the Activity
-        Message msg = mHandler.obtainMessage(BluetoothChatActivity.MESSAGE_TOAST);
+        Message msg = mHandler.obtainMessage(HomeCareFragment.MESSAGE_TOAST);
         Bundle bundle = new Bundle();
-        bundle.putString(BluetoothChatActivity.TOAST, "Device connection was lost");
+        bundle.putString(HomeCareFragment.TOAST, "Device connection was lost");
         msg.setData(bundle);
         mHandler.sendMessage(msg);
     }
@@ -377,7 +379,7 @@ public class BluetoothService {
                     bytes = mmInStream.read(buffer);
 
                     // Send the obtained bytes to the UI Activity
-                    mHandler.obtainMessage(BluetoothChatActivity.MESSAGE_READ, bytes, -1, buffer)
+                    mHandler.obtainMessage(HomeCareFragment.MESSAGE_READ, bytes, -1, buffer)
                             .sendToTarget();
                 } catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
@@ -396,7 +398,7 @@ public class BluetoothService {
                 mmOutStream.write(buffer);
 
                 // Share the sent message back to the UI Activity
-                mHandler.obtainMessage(BluetoothChatActivity.MESSAGE_WRITE, -1, -1, buffer)
+                mHandler.obtainMessage(HomeCareFragment.MESSAGE_WRITE, -1, -1, buffer)
                         .sendToTarget();
             } catch (IOException e) {
                 Log.e(TAG, "Exception during write", e);
