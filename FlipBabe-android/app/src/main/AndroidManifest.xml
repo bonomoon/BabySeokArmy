@@ -34,7 +34,7 @@
         </activity>
         <activity android:name=".view.init.InitActivity" />
         <activity android:name=".view.home.HomeActivity" />
-
+        <service android:name=".service.MusicService"/>
     </application>
 
 </manifest>

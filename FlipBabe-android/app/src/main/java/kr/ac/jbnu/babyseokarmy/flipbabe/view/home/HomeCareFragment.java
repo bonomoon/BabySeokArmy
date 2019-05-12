@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -23,6 +24,7 @@ import java.util.Objects;
 
 import kr.ac.jbnu.babyseokarmy.flipbabe.R;
 import kr.ac.jbnu.babyseokarmy.flipbabe.service.BluetoothService;
+import kr.ac.jbnu.babyseokarmy.flipbabe.service.MusicService;
 import kr.ac.jbnu.babyseokarmy.flipbabe.view.base.BaseFragment;
 import kr.ac.jbnu.babyseokarmy.flipbabe.view.blu.DeviceListActivity;
 
@@ -62,6 +64,8 @@ public class HomeCareFragment extends BaseFragment {
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     private static final String USER = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+    private MediaPlayer mediaPlayer;
 
     public HomeCareFragment() {
         super(R.layout.fragment_home_care);
@@ -144,12 +148,14 @@ public class HomeCareFragment extends BaseFragment {
             int cnt = Integer.parseInt(mFlipCnt.getText().toString());
             mFlipCnt.setText(Integer.toString(cnt + 1));
 
+            Objects.requireNonNull(getActivity()).startService(new Intent(getContext(), MusicService.class));
             timeThread = new Thread(new timeThread());
             timeThread.start();
         } else {
             babyIv.setImageResource(R.drawable.babynfzz);
             mFlipTv.setVisibility(View.GONE);
             situBtn.setVisibility(View.INVISIBLE);
+            Objects.requireNonNull(getActivity()).stopService(new Intent(getContext(), MusicService.class));
             mTimeTextView.setVisibility(View.INVISIBLE);
             timeThread.interrupt();
         }
