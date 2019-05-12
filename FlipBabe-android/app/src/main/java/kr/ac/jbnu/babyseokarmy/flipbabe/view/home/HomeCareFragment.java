@@ -17,12 +17,23 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
+import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.firestore.WriteBatch;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Objects;
 
 import kr.ac.jbnu.babyseokarmy.flipbabe.R;
+import kr.ac.jbnu.babyseokarmy.flipbabe.model.BabyDetail;
+import kr.ac.jbnu.babyseokarmy.flipbabe.model.BabyTotal;
 import kr.ac.jbnu.babyseokarmy.flipbabe.service.BluetoothService;
 import kr.ac.jbnu.babyseokarmy.flipbabe.service.MusicService;
 import kr.ac.jbnu.babyseokarmy.flipbabe.view.base.BaseFragment;
@@ -65,7 +76,7 @@ public class HomeCareFragment extends BaseFragment {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     private static final String USER = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-    private MediaPlayer mediaPlayer;
+    private String startTime;
 
     public HomeCareFragment() {
         super(R.layout.fragment_home_care);
@@ -90,6 +101,10 @@ public class HomeCareFragment extends BaseFragment {
             Toast.makeText(this.getContext(), "Bluetooth is not available", Toast.LENGTH_LONG).show();
             Objects.requireNonNull(this.getActivity()).finish();
         }
+        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                .setTimestampsInSnapshotsEnabled(true)
+                .build();
+        db.setFirestoreSettings(settings);
     }
 
     @Override
@@ -138,8 +153,20 @@ public class HomeCareFragment extends BaseFragment {
         startActivityForResult(new Intent(this.getContext(), DeviceListActivity.class), REQUEST_CONNECT_DEVICE);
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n", "SimpleDateFormat"})
     private void updateWarning(String w) {
+        //디비 트랜잭션
+        WriteBatch batch = db.batch();
+
+        Date date = new Date(System.currentTimeMillis());
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        String curTime = sdf.format(date);
+        DocumentReference diaryRef = db.collection("users").document(USER).collection("babyDiary").document(curTime);
+
+        sdf = new SimpleDateFormat("yyyyMMddhhmm");
+        curTime = sdf.format(date);
+        DocumentReference detailRef = diaryRef.collection("detail").document(curTime);
+
         if(w.equals("F")) {
             babyIv.setImageResource(R.drawable.babybw);
             mFlipTv.setVisibility(View.VISIBLE);
@@ -151,13 +178,23 @@ public class HomeCareFragment extends BaseFragment {
             Objects.requireNonNull(getActivity()).startService(new Intent(getContext(), MusicService.class));
             timeThread = new Thread(new timeThread());
             timeThread.start();
+            batch.set(diaryRef, new BabyTotal(cnt+1, 0, 0));
+            sdf = new SimpleDateFormat("hh:mm:ss");
+            startTime = sdf.format(date);
         } else {
+            sdf = new SimpleDateFormat("hh:mm:ss");
+            String lastTime = sdf.format(date);
+            batch.set(detailRef, new BabyDetail(startTime, lastTime, "flip"));
+
             babyIv.setImageResource(R.drawable.babynfzz);
             mFlipTv.setVisibility(View.GONE);
             situBtn.setVisibility(View.INVISIBLE);
             Objects.requireNonNull(getActivity()).stopService(new Intent(getContext(), MusicService.class));
             mTimeTextView.setVisibility(View.INVISIBLE);
             timeThread.interrupt();
+
+            // Commit the batch
+            batch.commit().addOnCompleteListener(task -> {});
         }
         //mPeePooTv.setVisibility(View.VISIBLE);
     }
