@@ -46,7 +46,7 @@
                 android:layout_marginBottom="30dp"
                 android:paddingLeft="50dp"
                 android:paddingRight="50dp"
-                android:visibility="invisible"
+                android:visibility="gone"
                 android:text="기저귀 교체"
                 android:textSize="18sp"
                 android:background="@drawable/btn_gradient_circle_white"/>
@@ -69,9 +69,10 @@
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="30dp"
+                android:layout_width="50dp"
                 android:layout_height="30dp"
-                android:src="@drawable/btn_accent_circle"
+                android:scaleType="centerCrop"
+                android:src="@drawable/battery"
                 />
 
             <TextView
@@ -88,7 +89,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:gravity="center"
-                android:text="96  %"
+                android:text="86  %"
                 android:textSize="25sp"
                 android:textColor="@color/black"/>
         </LinearLayout>
@@ -114,10 +115,10 @@
                 android:layout_marginBottom="10dp"
                 android:orientation="horizontal">
                 <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:gravity="center"
-                    android:src="@drawable/btn_accent_circle"
+                    android:src="@drawable/poo"
                     />
 
                 <TextView
@@ -157,10 +158,10 @@
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal">
                 <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:gravity="center"
-                    android:src="@drawable/btn_accent_circle"
+                    android:src="@drawable/pee"
                     />
 
                 <TextView
@@ -206,28 +207,42 @@
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="30dp"
+                android:layout_width="60dp"
                 android:layout_height="30dp"
-                android:src="@drawable/btn_accent_circle"
+                android:src="@drawable/flip"
+                android:scaleType="centerCrop"
                 />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:layout_marginTop="5dp"
                 android:text="뒤집기"
                 android:textSize="13sp"
                 android:textColor="@color/black"/>
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center|right"
                 android:layout_marginTop="20dp"
-                android:gravity="center"
-                android:text="10 회"
-                android:textColor="@color/black"
-                android:textSize="25sp" />
+                android:layout_marginRight="10dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/flip_cnt_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="3dp"
+                    android:text="0"
+                    android:textSize="25sp"
+                    android:textColor="@color/black"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="회"
+                    android:textSize="25sp"
+                    android:textColor="@color/black"/>
+            </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>
@@ -248,7 +263,7 @@
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:text="서비스 시작을 위해 돌봄시작을 눌러주세요!"
-            android:textSize="15sp" />
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/flip_tv"
@@ -256,7 +271,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="아기가 뒤집기를 했어요!"
-            android:textSize="15sp"
+            android:textSize="20sp"
             android:textColor="@color/red"
             android:visibility="gone"/>
 
@@ -266,7 +281,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="대소변이 감지되었어요!"
-            android:textSize="15sp"
+            android:textSize="20sp"
             android:textColor="@color/red"
             android:visibility="gone"/>
 

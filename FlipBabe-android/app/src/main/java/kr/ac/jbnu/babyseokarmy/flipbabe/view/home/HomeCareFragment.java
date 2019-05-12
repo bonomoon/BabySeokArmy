@@ -16,6 +16,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.Objects;
 
 import kr.ac.jbnu.babyseokarmy.flipbabe.R;
@@ -51,11 +54,14 @@ public class HomeCareFragment extends BaseFragment {
     // Name of the connected device
     private String mConnectedDeviceName = null;
 
-    ImageView babyIv;
-    Button situBtn;
-    TextView mPeePooTv, mFlipTv, mInfoTv, mTimeTextView;
+    private ImageView babyIv;
+    private Button situBtn, careConnBtn;
+    private TextView mPeePooTv, mFlipTv, mInfoTv, mTimeTextView, mFlipCnt;
 
     private Thread timeThread = null;
+
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private static final String USER = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
     public HomeCareFragment() {
         super(R.layout.fragment_home_care);
@@ -89,22 +95,32 @@ public class HomeCareFragment extends BaseFragment {
         mInfoTv = v.findViewById(R.id.info_tv);
         mTimeTextView = v.findViewById(R.id.timer_tv);
         babyIv = v.findViewById(R.id.baby_type_img);
+        mFlipCnt = v.findViewById(R.id.flip_cnt_tv);
 
-        Button careConnBtn = v.findViewById(R.id.care_conn_btn);
+        careConnBtn = v.findViewById(R.id.care_conn_btn);
         careConnBtn.setOnClickListener(view -> {
             // 블루투스 연결안됐을때 연결하게 한다.
             // setupChat() will then be called during onActivityResult
-            if (!mBluetoothAdapter.isEnabled()) {
-                startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), REQUEST_ENABLE_BT);
-                // Otherwise, setup the chat session
+            if(careConnBtn.getText().toString().equals("돌봄 시작")) {
+                if (!mBluetoothAdapter.isEnabled()) {
+                    startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), REQUEST_ENABLE_BT);
+                    // Otherwise, setup the chat session
+                } else {
+                    if (mBlueService == null) setup();
+                    else
+                        startActivityForResult(new Intent(this.getContext(), DeviceListActivity.class), REQUEST_CONNECT_DEVICE);
+                }
             } else {
-                if (mBlueService == null) setup();
-                else startActivityForResult(new Intent(this.getContext(), DeviceListActivity.class), REQUEST_CONNECT_DEVICE);
+                careConnBtn.setText("돌봄 시작");
+                babyIv.setImageResource(R.drawable.babynfq);
+                mInfoTv.setText("서비스 시작을 위해 돌봄시작을 눌러주세요!");
+                careConnBtn.setBackgroundResource(R.drawable.btn_gradient_circle_green);
+                mBlueService = null;
             }
         });
         situBtn = v.findViewById(R.id.situ_btn);
         situBtn.setOnClickListener(view -> {
-            situBtn.setVisibility(View.INVISIBLE);
+            situBtn.setVisibility(View.GONE);
             mTimeTextView.setVisibility(View.INVISIBLE);
             timeThread.interrupt();
         });
@@ -118,12 +134,16 @@ public class HomeCareFragment extends BaseFragment {
         startActivityForResult(new Intent(this.getContext(), DeviceListActivity.class), REQUEST_CONNECT_DEVICE);
     }
 
+    @SuppressLint("SetTextI18n")
     private void updateWarning(String w) {
-        mInfoTv.setText("돌봄 중입니다.");
         if(w.equals("F")) {
             babyIv.setImageResource(R.drawable.babybw);
             mFlipTv.setVisibility(View.VISIBLE);
             mTimeTextView.setVisibility(View.VISIBLE);
+
+            int cnt = Integer.parseInt(mFlipCnt.getText().toString());
+            mFlipCnt.setText(Integer.toString(cnt + 1));
+
             timeThread = new Thread(new timeThread());
             timeThread.start();
         } else {
@@ -152,13 +172,25 @@ public class HomeCareFragment extends BaseFragment {
                     switch (msg.arg1) {
                         case BluetoothService.STATE_CONNECTED:
                             Toast.makeText(getContext(), R.string.title_connected_to, Toast.LENGTH_SHORT).show();
+                            babyIv.setImageResource(R.drawable.babynfzz);
+                            mInfoTv.setText("돌봄 중입니다.");
+                            careConnBtn.setVisibility(View.VISIBLE);
+                            careConnBtn.setText("돌봄 종료");
+                            careConnBtn.setBackgroundResource(R.drawable.btn_gradient_circle_orange);
                             break;
                         case BluetoothService.STATE_CONNECTING:
                             Toast.makeText(getContext(), R.string.title_connecting, Toast.LENGTH_SHORT).show();
+                            careConnBtn.setVisibility(View.INVISIBLE);
+                            mInfoTv.setText("돌봄 서비스를 위해 FlipBabe에 연결 중입니다.");
                             break;
                         case BluetoothService.STATE_LISTEN:
                         case BluetoothService.STATE_NONE:
                             Toast.makeText(getContext(), R.string.title_not_connected, Toast.LENGTH_SHORT).show();
+                            babyIv.setImageResource(R.drawable.babynfq);
+                            mInfoTv.setText("서비스 시작을 위해 돌봄시작을 눌러주세요!");
+                            careConnBtn.setVisibility(View.VISIBLE);
+                            careConnBtn.setBackgroundResource(R.drawable.btn_gradient_circle_green);
+                            careConnBtn.setText("돌봄 시작");
                             break;
                     }
                     break;
