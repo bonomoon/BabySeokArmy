@@ -160,11 +160,11 @@ public class HomeCareFragment extends BaseFragment {
 
         Date date = new Date(System.currentTimeMillis());
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-        String curTime = sdf.format(date);
-        DocumentReference diaryRef = db.collection("users").document(USER).collection("babyDiary").document(curTime);
+        String curTimee = sdf.format(date);
+        DocumentReference diaryRef = db.collection("users").document(USER).collection("babyDiary").document(curTimee);
 
         sdf = new SimpleDateFormat("yyyyMMddhhmm");
-        curTime = sdf.format(date);
+        String curTime = sdf.format(date);
         DocumentReference detailRef = diaryRef.collection("detail").document(curTime);
 
         if(w.equals("F")) {
@@ -178,13 +178,14 @@ public class HomeCareFragment extends BaseFragment {
             Objects.requireNonNull(getActivity()).startService(new Intent(getContext(), MusicService.class));
             timeThread = new Thread(new timeThread());
             timeThread.start();
-            batch.set(diaryRef, new BabyTotal(cnt+1, 0, 0));
+            diaryRef.set(new BabyTotal(curTimee, cnt+1, 0, 0));
+
             sdf = new SimpleDateFormat("hh:mm:ss");
             startTime = sdf.format(date);
         } else {
             sdf = new SimpleDateFormat("hh:mm:ss");
             String lastTime = sdf.format(date);
-            batch.set(detailRef, new BabyDetail(startTime, lastTime, "flip"));
+            detailRef.set( new BabyDetail(startTime, lastTime, "flip"));
 
             babyIv.setImageResource(R.drawable.babynfzz);
             mFlipTv.setVisibility(View.GONE);
@@ -192,9 +193,6 @@ public class HomeCareFragment extends BaseFragment {
             Objects.requireNonNull(getActivity()).stopService(new Intent(getContext(), MusicService.class));
             mTimeTextView.setVisibility(View.INVISIBLE);
             timeThread.interrupt();
-
-            // Commit the batch
-            batch.commit().addOnCompleteListener(task -> {});
         }
         //mPeePooTv.setVisibility(View.VISIBLE);
     }
